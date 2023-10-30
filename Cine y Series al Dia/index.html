@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cine y Series Al Día</title>    
+    <link rel="stylesheet" type="text/css" href="styles/main.css">
+    <link rel="stylesheet" type="text/css" href="styles/form.css">
+</head>
+<body>
+    <header>
+        <h1>
+            <span>C</span>
+            <span>i</span>
+            <span>n</span>
+            <span>e</span>
+            <span></span>
+            <span>y</span>
+            <span></span>            
+            <span>S</span>
+            <span>e</span>
+            <span>r</span>
+            <span>i</span>
+            <span>e</span>
+            <span>s</span>
+            <span> </span>
+            <span>a</span>
+            <span>l</span>
+            <span> </span>
+            <span>D</span>
+            <span>i</span>
+            <span>a</span>                      
+        </h1>        
+        <nav>
+            <ul>
+                <li><a href="#popular">Popular</a></li>
+                <li><a href="#nuevos-lanzamientos">Series Nuevas</a></li>
+                <li><a href="#generos">Generos</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="popular">
+        <h2>Series y Peliculas Populares</h2>
+        <p>Descubre las series y pelicuas mas populares</p>
+        <iframe src="https://www.youtube.com/embed/DDpiJ16yqnM" width="680" height="480" allowfullscreen></iframe>
+    </section>
+
+    <section id="nuevos-lanzamientos">
+        <h2>Series Nuevas</h2>
+        <p>Revisa las ultimas peliculas y series</p>
+        
+    </section>
+
+    <section id="generos">
+        <h2>Generos</h2>
+        <p>Encuentra series y pelicuas segun tu genero favorito.</p>
+        <input type="text" id="searchInput" placeholder="Search...">
+        <div id="resultsGrid" class="grid-container"></div>        
+        
+    </section>
+
+    <section id="contacto">
+        <h2>Contacto</h2>
+        <p>Escribenos para comentarios o sugerencias sobre alguna serie o pelicula.</p>
+        <div id="contact-form" class="hidden">
+           <form>
+            <div class="form-group">
+                <label for="name"> Nombre </label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email"> Email </label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="telefono"> Telefono </label>
+                <input type="tel" id="Telefono" name="Telefono">
+            </div>
+            <div class="form-group">
+                <label for="mensaje"> Mensaje </label>
+                <textarea id="mensaje" name="mensaje" required></textarea>
+            </div>
+            <button type="submit"> Enviar </button>
+            </form>
+        </div>                
+    </section>
+
+    <footer>
+        <p>&copy; 2023 Cine y Series Al Dia. All rights reserved.</p>
+    </footer>
+    <script>
+        const contactoLink = document.querySelector('nav ul li a[href="#contacto"]');
+        const contactForm = document.getElementById('contact-form');
+        const contactSection = document.getElementById('contacto');
+    
+        contactoLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            contactForm.classList.toggle('hidden');
+            contactSection.scrollIntoView();
+            contactSection.focus();
+        });
+    
+        const letters = document.querySelectorAll('h1 span');
+        letters.forEach((letter, index) => {
+            setTimeout(() => {
+                letter.classList.add('animated');
+            }, 100 * index); 
+        });
+        const apiKey = 'a09da150e865a54ff7e24de489927ac9';
+        const searchInput = document.getElementById('searchInput');
+        const resultsGrid = document.getElementById('resultsGrid');
+
+        searchInput.addEventListener('input', searchMovies);
+
+        function searchMovies() {
+            const searchQuery = searchInput.value;
+            fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${searchQuery}`)
+                .then(response => response.json())
+                .then(data => {
+                    displayResults(data.results);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function displayResults(results) {
+            resultsGrid.innerHTML = ''; 
+            for (const result of results) {
+                const movieCard = document.createElement('div');
+                movieCard.classList.add('movie-card');
+                movieCard.innerHTML = `
+                    <img src="https://image.tmdb.org/t/p/w200${result.poster_path}" alt="${result.title}">
+                    <h3>${result.title}</h3>
+                    <p>Release Date: ${result.release_date}</p>
+                    <p>Vote Average: ${result.vote_average}</p>
+                `;
+                resultsGrid.appendChild(movieCard);
+            }
+        }
+    </script>
+    
+</body>
+</html>
