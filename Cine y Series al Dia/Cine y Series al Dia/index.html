@@ -3,8 +3,7 @@
 <head>    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cine y Series Al Día</title>    
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Cine y Series Al Día</title>      
     <link rel="stylesheet" type="text/css" href="styles/main.css">
     <link rel="stylesheet" type="text/css" href="styles/form.css">
     <link rel="stylesheet" type="text/css" href="styles/side.css">    
@@ -38,20 +37,21 @@
             <ul>
                 <li><a href="#popular">Popular</a></li>
                 <li><a href="#nuevos-lanzamientos">Series Nuevas</a></li>
-                <li><a href="#generos">Generos</a></li>
+                <li><a href="#generos">Encuentra</a></li>
                 <li><a href="#contacto">Contacto</a></li>
             </ul>
         </nav>
     </header>
 
-    <section id="popular">
-        <h2>Series y Peliculas Populares</h2>
-        <p>Descubre las series y pelicuas mas populares</p>        
-        <div class="video-container">
-            <iframe src="https://www.youtube.com/embed/DDpiJ16yqnM" allowfullscreen></iframe>                        
-        </div>                
-        
-    </section>
+    
+    <section id="generos">
+        <h2>Encuentra</h2>
+        <p>Tus proximas series y peliculas favoritas.</p>
+        <input type="text" id="searchInput" placeholder="Buscar...">
+        <div id="resultsGrid" class="grid-container"></div>        
+        <aside class="block-reserved"><p>Espacio disponible para publicidad</p></aside>
+    </section>   
+    
 
     <section id="nuevos-lanzamientos">
         <h2>Series Nuevas</h2>
@@ -71,14 +71,14 @@
                 </figure>            
         </div>
         <aside class="block-reserved"><p>Espacio disponible para publicidad</p></aside>
-    </section>
+    </section>    
 
-    <section id="generos">
-        <h2>Generos</h2>
-        <p>Encuentra series y pelicuas segun tu genero favorito.</p>
-        <input type="text" id="searchInput" placeholder="Search...">
-        <div id="resultsGrid" class="grid-container"></div>        
-        <aside class="block-reserved"><p>Espacio disponible para publicidad</p></aside>
+    <section id="popular">
+        <h2>Series y Peliculas Populares</h2>
+        <p>Descubre las series y pelicuas mas populares</p>        
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/DDpiJ16yqnM" allowfullscreen></iframe>                        
+        </div>                        
     </section>
 
     <section id="contacto">
@@ -114,99 +114,20 @@
     </footer>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api_tmdb_seach.js"></script>
+    <script src="js/form.js"></script>
+    <script src="js/carousel.js"></script>
     <script>        
-        const contactoLink = document.querySelector('nav ul li a[href="#contacto"]');
-        const contactForm = document.getElementById('contact-form');
-        const contactSection = document.getElementById('contacto');
-    
-        contactoLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            contactForm.classList.toggle('hidden');
-            contactSection.scrollIntoView();
-            contactSection.focus();
-        });
+        
     
         const letters = document.querySelectorAll('h1 span');
         letters.forEach((letter, index) => {
             setTimeout(() => {
                 letter.classList.add('animated');
             }, 100 * index); 
-        });
-        const apiKey = 'a09da150e865a54ff7e24de489927ac9';
-        const searchInput = document.getElementById('searchInput');
-        const resultsGrid = document.getElementById('resultsGrid');
-
-        searchInput.addEventListener('input', searchMovies);
-
-        function searchMovies() {
-            const searchQuery = searchInput.value;
-            fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${searchQuery}`)
-                .then(response => response.json())
-                .then(data => {
-                    displayResults(data.results);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-
-        function displayResults(results) {
-            resultsGrid.innerHTML = ''; 
-            for (const result of results) {
-                const movieCard = document.createElement('div');
-                movieCard.classList.add('movie-card');
-                // Create an anchor element for each movie card
-                const movieLink = document.createElement('a');
-                movieLink.href = `vid/video.mp4`; // Adjust the URL as needed
-                movieLink.innerHTML = `
-                    <img src="https://image.tmdb.org/t/p/w200${result.poster_path}" alt="${result.title}">
-                    <h3>${result.title}</h3>
-                    <p>Release Date: ${result.release_date}</p>
-                    <p>Vote Average: ${result.vote_average}</p>
-                `;
-
-                // Append the anchor element to the movie card
-                movieCard.appendChild(movieLink);
-
-                resultsGrid.appendChild(movieCard);
-        }      
-    }
-
-    document.querySelectorAll(".carousel").forEach((carousel) => {
-  const items = carousel.querySelectorAll(".carousel_item");
-  const buttonsHtml = Array.from(items, () => {
-    return `<span class="carousel__button"></span>`;
-  });
-
-  carousel.insertAdjacentHTML(
-    "beforeend",
-    `
-		<div class="carousel__nav">
-			${buttonsHtml.join("")}
-		</div>
-	`
-  );
-
-  const buttons = carousel.querySelectorAll(".carousel__button");
-
-  buttons.forEach((button, i) => {
-    button.addEventListener("click", () => {      
-      items.forEach((item) =>
-        item.classList.remove("carousel_item--selected")
-      );
-      buttons.forEach((button) =>
-        button.classList.remove("carousel__button--selected")
-      );
-
-      items[i].classList.add("carousel_item--selected");
-      button.classList.add("carousel__button--selected");
-    });
-  });
+        });       
 
   
-    items[0].classList.add("carousel_item--selected");
-    buttons[0].classList.add("carousel__button--selected");
-    });
 
     document.addEventListener("DOMContentLoaded", function () {
     const scrollToTop = document.getElementById("scrollToTop");
